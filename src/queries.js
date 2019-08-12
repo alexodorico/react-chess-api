@@ -13,6 +13,32 @@ const getUser = async (req, res) => {
   return res.json({ games, wins, losses });
 };
 
+const postResult = async (req, res) => {
+  const { winner, loser } = req.body;
+  const resultsQuery =
+    "INSERT INTO results (winner, loser, time_ended) VALUES ($1, $2, $3)";
+  const winnerQuery =
+    "UPDATE users set wins = (SELECT COUNT(winner) FROM results WHERE winner = $1) WHERE username = $1";
+  const loserQuery =
+    "UPDATE users set losses = (SELECT COUNT(loser) FROM results WHERE loser = $1) WHERE username = $1";
+
+  await db.query(resultsQuery, [winner, loser, Date.now()]);
+  db.query(winnerQuery, [winner]);
+  db.query(loserQuery, [loser]);
+
+  return res.status(201).json({ status: "updated" });
+};
+
+const getLeaderboard = async (req, res) => {
+  const query =
+    "SELECT wins, losses, username FROM users GROUP BY username ORDER BY wins DESC, losses ASC LIMIT 100";
+  const { rows } = await db.query(query);
+
+  return res.json(rows);
+};
+
 export default {
-  getUser
+  getUser,
+  postResult,
+  getLeaderboard
 };

@@ -1,12 +1,13 @@
 import express from "express";
+const app = express();
+const http = require("http").Server(app);
 import bodyParser from "body-parser";
 import cors from "cors";
 import auth from "./auth";
-const http = require("http").Server(app);
+import queries from "./queries";
 const io = require("socket.io")(http);
 const port = process.env.PORT || 3000;
 
-const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,13 +18,13 @@ app.post("/register", auth.createUser);
 
 app.post("/login", auth.login);
 
-app.get("/player/:username", auth.verifyToken);
+app.post("/result", queries.postResult);
 
-app.post("/results", auth.verifyToken);
+app.get("/profile/:username", queries.getUser);
 
-app.get("/leaderboard", auth.verifyToken);
+app.get("/leaderboard", queries.getLeaderboard);
 
-app.get("/joingame", auth.verifyToken, (req, res) => {
+app.get("/joingame", (req, res) => {
   if (queue.length < 1) {
     const gameId = (Math.random() + 1).toString(36).slice(2, 18);
     queue.push(gameId);
