@@ -13,19 +13,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 let queue = new Array();
 
-app.post("/register", (req, res) => {});
+app.post("/register", auth.createUser);
 
-app.post("/login", (req, res) => {});
+app.post("/login", auth.login);
 
-app.post("/logout", (req, res) => {});
+app.get("/player/:username", auth.verifyToken);
 
-app.get("/player/:username", (req, res) => {});
+app.post("/results", auth.verifyToken);
 
-app.post("/results", (req, res) => {});
+app.get("/leaderboard", auth.verifyToken);
 
-app.get("/leaderboard", (req, res) => {});
-
-app.get("/joingame", (req, res) => {
+app.get("/joingame", auth.verifyToken, (req, res) => {
   if (queue.length < 1) {
     const gameId = (Math.random() + 1).toString(36).slice(2, 18);
     queue.push(gameId);
