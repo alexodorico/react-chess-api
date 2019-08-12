@@ -29,9 +29,9 @@ const verifyToken = async (req, res, next) => {
 
 const login = async (req, res) => {
   const query = "SELECT * FROM users WHERE username = $1 LIMIT 1";
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  const { rows } = await db.query(query, [email]);
+  const { rows } = await db.query(query, [username]);
 
   if (rows.length) {
     const isValid = await bcrypt.compare(password, rows[0].password);
@@ -57,11 +57,12 @@ const login = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, username, password } = req.body;
   const hash = await bcrypt.hash(password, 10);
-  const query = "INSERT INTO users (email, password) VALUES ($1, $2)";
+  const query =
+    "INSERT INTO users (email, username, password) VALUES ($1, $2 $3)";
 
-  db.query(query, [email, hash], error => {
+  db.query(query, [email, username, hash], error => {
     if (error) {
       throw error;
     }
