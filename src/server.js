@@ -18,13 +18,13 @@ app.post("/register", auth.createUser);
 
 app.post("/login", auth.login);
 
-app.post("/result", queries.postResult);
+app.post("/result", auth.verifyToken, queries.postResult);
 
-app.get("/profile/:username", queries.getUser);
+app.get("/profile/:username", auth.verifyToken, queries.getUser);
 
-app.get("/leaderboard", queries.getLeaderboard);
+app.get("/leaderboard", auth.verifyToken, queries.getLeaderboard);
 
-app.get("/joingame", (req, res) => {
+app.get("/joingame", auth.verifyToken, (req, res) => {
   if (queue.length < 1) {
     const gameId = (Math.random() + 1).toString(36).slice(2, 18);
     queue.push(gameId);
