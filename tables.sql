@@ -1,21 +1,21 @@
 --RESULTS TABLE--
 CREATE TABLE results (
     id SERIAL PRIMARY KEY,
-    winner integer NOT NULL REFERENCES users(id),
-    loser integer NOT NULL REFERENCES users(id),
-    time_ended text NOT NULL
+    time_ended text NOT NULL,
+    winner text NOT NULL REFERENCES users(username),
+    loser text NOT NULL REFERENCES users(username)
 );
 
 CREATE UNIQUE INDEX results_pkey ON results(id int4_ops);
 
---USER TABLE--
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username text NOT NULL UNIQUE,
+    username text UNIQUE PRIMARY KEY,
     email text NOT NULL UNIQUE,
-    password text NOT NULL
+    password text NOT NULL,
+    wins integer NOT NULL DEFAULT 0,
+    losses integer NOT NULL DEFAULT 0
 );
 
-CREATE UNIQUE INDEX users_pkey ON users(id int4_ops);
 CREATE UNIQUE INDEX users_username_key ON users(username text_ops);
 CREATE UNIQUE INDEX users_email_key ON users(email text_ops);
+CREATE UNIQUE INDEX users_pkey ON users(username text_ops);
