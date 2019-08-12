@@ -11,9 +11,11 @@ CREATE UNIQUE INDEX results_pkey ON results(id int4_ops);
 --USER TABLE--
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username text NOT NULL,
-    email text NOT NULL,
+    username text NOT NULL UNIQUE,
+    email text NOT NULL UNIQUE,
     password text NOT NULL
 );
 
 CREATE UNIQUE INDEX users_pkey ON users(id int4_ops);
+CREATE UNIQUE INDEX users_username_key ON users(username text_ops);
+CREATE UNIQUE INDEX users_email_key ON users(email text_ops);
